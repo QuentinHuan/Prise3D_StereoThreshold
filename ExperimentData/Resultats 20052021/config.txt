@@ -1,0 +1,50 @@
+##----------------------------------##
+		Parameters
+##----------------------------------##
+ImagePath=C:\Users\casque\Desktop\StereoThreshold_P3D\image\
+
+ExperimentTime=90
+
+RefValue=500
+
+#sampling freq
+Fs=0.01
+
+#patch update freq
+F=5
+
+#max=12*maxnoisevalue
+maxNoiseValue=10
+
+patchSize = 0.25
+##----------------------------------##
+#	  Polar distribution
+##----------------------------------##
+#patch spawn relative to vision center
+PolarNoiseDistrib=0
+
+#for PolarNoiseDistrib = 1
+RadiusMin=0.5
+RadiusMax=0.5
+
+#noise patch follow headset orientation
+noiseFollowGazeDir=0
+
+
+##----------------------------------##
+#	      rendering
+##----------------------------------##
+#patch alpha right and left, 1 1 for noise in both eyes
+ShowNoiseLeft=1
+ShowNoiseRight=1
+
+#aim radius, 0 to disable
+aimRadius=0.0035
+
+invertNoise=0
+
+##----------------------------------##
+#		scene list
+# (_ODS scenes will be displayed in 360 deg stereo)
+##----------------------------------##
+#    ==> see file scenes.txt
