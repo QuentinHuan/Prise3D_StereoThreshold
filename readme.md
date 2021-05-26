@@ -1,6 +1,6 @@
 Prise3D_StereoThreshold experiment repository: constains source of various tools used during my 2021 internship (LISIC, Calais, France)
 
-# Description :
+# Directories description :
 
 * P3d_StereoThreshold: binary version of experiment \#1 (capture of perceptive thresholds for noisy pathtraced stereo images)
 * Image: link to the image dataBase (800x800 .png images, increment of 20 spp per image)
