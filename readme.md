@@ -1,4 +1,4 @@
-Prise3D_StereoThreshold experiment repository: constains source of various tools and results used during my 2021 internship (LISIC, Calais, France)
+Prise3D_StereoThreshold experiment repository: constains source of various tools used during my 2021 internship (LISIC, Calais, France)
 
 # Description :
 
