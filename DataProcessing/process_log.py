@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import fileinput
 import os
-import utility
+import utility as u
 import sys
 
 #distance function
@@ -17,28 +17,6 @@ def phi(blockPos, gazePos, size):
 
     return np.asarray(out).astype(np.float64)
 
-# convert (X,Y) position (0.0 to 1.0) into 0-15 id (represents a 4x4 grid)
-#
-#    0-------------------> [x=1]
-#    | ------------------
-#    | | 0 | 1 | 2 | 3  |
-#    | ------------------
-#    | | 4 | 5 | 6 | 7  |
-#    | ------------------
-#    | | 8 | 9 |10 |11  |
-#    | ------------------
-#    | |12 |13 |14 |15  |
-#    | ------------------
-#    V [y=1]
-def XYtoID(position):
-    x=position[0]
-    y=position[1]
-    
-    x=np.ceil((x+0.05)*4 -1)
-    y=np.ceil((y+0.05)*4 -1)
-    
-    
-    return np.abs(x+(4*y))
 
 # removes all the irrelevant text from the log file
 # save the clean file in ./logs/prune_filename.log
@@ -47,7 +25,7 @@ def prune_logFile(path,fileName):
     file = open(path+"/"+fileName, 'r')
     Lines = file.readlines()
     
-    outFile = open("logs/prune_"+fileName,"w")
+    outFile = open("./data/prune_"+fileName,"w")
     
     for l in Lines:
         if( (l[0] != "#") and ("p3d:" in l) and ("p3d:FIN" not in l) ):
@@ -78,7 +56,7 @@ def split_logFile(path,fileName):
                 if(scene !="NULL"):
                     outFile.close()
                 scene = l_split[0]
-                outFile = open("logs/"+scene+"_"+fileName_striped,"w")
+                outFile = open(path+"/"+scene+"_"+fileName_striped,"w")
             #rewrite without the scene name at the begining of each line
             outFile.write(l.replace(l_split[0]+";",""))
         outFile.write("-1;X=-1 Y=-1;X=-1 Y=-1;-1;0")
@@ -136,7 +114,7 @@ def analyze_logFile(path,fileName):
     score=0
     for i in range(T.size):
         #detect block change: save result
-        if( XYtoID(blockPos[i]) != previousID or spp[i] != previousSpp ):
+        if( u.XYtoID(blockPos[i]) != previousID or spp[i] != previousSpp ):
             if score > (0.5/0.01): #detected for more than 0.5 second
                 bDetected=1
             if (15 >= previousID and previousID >= 0 and i>0):
@@ -148,7 +126,7 @@ def analyze_logFile(path,fileName):
                 score=score+1
                 
         previousSpp=spp[i]
-        previousID=XYtoID(blockPos[i])
+        previousID=u.XYtoID(blockPos[i])
         
     
     # save into file
@@ -158,173 +136,18 @@ def analyze_logFile(path,fileName):
     file.close()
     return 0
 
+# should be executed after analyze_logFile()
+# for each scene, merge all results in a single file named scene_results.log
+# delete all intermediate files
+def merge_logFile(path,sceneList):
 
-### TO BE DELETED
-def parse_logFile(path,fileName,save):
-    
-    file = open(path+"/"+fileName, 'r')
-    Lines = file.readlines()
-    
-    sceneName=""
-    
-    T = []
-    blockPos = []
-    gazePos = []
-    spp = []
-    detection = []
-    
-    #sampling freq
-    fs = 1/0.01
-    #patch movement freq
-    f = 4
-    maxSpp=500
-    patchSize = 0.2
-    #aspect ratio
-    ar = 1920/1080
-    
-    #distance function
-    def phi(blockPos, gazePos, size):
-        out = []
-        
-        for i in range(size):
-            v = blockPos[i,:] - gazePos[i,:]
-            v[0] = v[0] * ar
-            p = 2
-            r = np.power(v[0]**p + v[1]**p,1/p)
-            out.append(r)
-    
-        return np.asarray(out).astype(np.float64)
-    
-    ##--------------------------------------------
-    ##              main script
-    ##--------------------------------------------
-    #-----------------
-    #parse log file
-    #-----------------
-    i = 0
-    for l in Lines:
-        if(l[0] != "#" and "p3d" in l):
-            #extract data
-            l=l.split("p3d:")[1]
-            #split on ";"
-            split = l.split(";")
-            sceneName = split[0]
-            t = split[1]
-            patchPos =  split[3].split(" ")
-            patchX = patchPos[0].split("=")[1]
-            patchY = patchPos[1].split("=")[1]
-    
-            gaze = split[2].split(" ")
-            gazeX = gaze[0].split("=")[1]
-            gazeY = gaze[1].split("=")[1]
-    
-            detect = int(split[5])
-    
-            T.append(t)
-            blockPos.append((patchX,patchY))
-            gazePos.append((gazeX,gazeY))
-            spp.append(split[4])
-            detection.append(detect)
-            i=i+1
-    
-    print("--------------------")
-    print("processing scene <" + sceneName + ">")
-    print("--------------------")
-    # convert to array
-    blockPos = np.asarray(blockPos).astype(np.float64)
-    gazePos = np.asarray(gazePos).astype(np.float64)
-    T = np.asarray(T).astype(np.float64)
-    spp = np.asarray(spp).astype(np.float64)
-    PHI = phi(blockPos,gazePos,blockPos.shape[0])
-    detection = np.asarray(detection).astype(np.float64)
-    
-    #-----------------
-    #processing
-    #-----------------
-    #number of samples in a patch lifetime
-    N = int(f*fs)
-    
-    # saturation: if gaze point is near enough, score = 1
-    # else score = 0 
-    score = []
-    for i in range(T.size):
-        
-        if(PHI[i]<patchSize):
-            #score.append( (1 - (PHI[i]/np.sqrt(1+(ar*ar)))) * detection[i] )
-            score.append( (1 - (PHI[i]/patchSize)) * detection[i] )
-        else:
-            score.append(0)
-        #sleep(0.0001)
-    #convert to array
-    score = np.asarray(score)
-    
-    #---------------------------
-    #create data structs
-    #---------------------------
-    
-    print("agregating results...")
-    dataStructs = []
-    
-    currentSpp = 0
-    lastSpp = -1
-    
-    s = []
-    #score
-    for t in range(T.size):
-        currentSpp = spp[t]
-        #new patch, save current one
-        if(currentSpp != lastSpp):
-            if(len(s) > 0):
-                dataStructs.append(data(blockPos[t,0],blockPos[t,1],lastSpp,max(s)))
-                s = []
-        else:
-            s.append(score[t])
-        
-        lastSpp = currentSpp
-
-    #   gaze position when detecting
-    gazeDetect = []
-    for i in range(detection.size):
-        if(detection[i]==1):
-            gazeDetect.append(gazePos[i])
-    
-
-    #---------------------------
-    #save detecting gaze position into database
-    #---------------------------
-    filename = sceneName + "_Gaze.txt"
-    filename = os.path.join("results",filename)
-    if(save):
-        if(os.path.exists(filename)):
-            F = open(filename,"a")
-        else:
-            F = open(filename,"w")
-    
-        for i in range(len(gazeDetect)):
-            F.write(str(gazeDetect[i][0]) + ";" + str(gazeDetect[i][1]) + ";\n")
-    
-        print("results saved into <"+filename+">\n")
+    for s in sceneList:
+        filename =path+"/"+s+"_results.log"
+        F = open(filename,"w")
+        files=u.listFiles(path,[s+"_2"])
+        for f in files:
+            splitFile = open(path+"/"+f,"r")
+            F.writelines(splitFile.readlines())
+            splitFile.close()
+            os.remove(path+"/"+f)
         F.close()
-    else:
-        print("results discarded\n")
-
-
-    #---------------------------
-    #save result into database
-    #---------------------------
-    filename = sceneName + "_Data.txt"
-    filename = os.path.join("results",filename)
-    if(save):
-        if(os.path.exists(filename)):
-            F = open(filename,"a")
-        else:
-            F = open(filename,"w")
-    
-        for i in range(len(dataStructs)):
-            F.write(dataStructs[i].toString())
-    
-        print("results saved into <"+filename+">\n")
-        F.close()
-    else:
-        print("results discarded\n")
-
