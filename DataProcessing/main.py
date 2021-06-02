@@ -15,6 +15,8 @@ import glob
 import numpy as np
 from PIL import Image
 import matplotlib.pyplot as plt
+from scipy.optimize import curve_fit
+
 
 # process log files located in logPath
 # save the dataset in ./data
@@ -129,14 +131,13 @@ def computeProbability_spp(data,spp):
 # return [array P, array SPP]
 def compute_probability(cellID,resultFilePath):
     data = sort_data(resultFilePath)
-    
     P=[]
     SPP=[]
-    
-
-    for spp in range(1,150):
-        P.append(computeProbability_spp(data[cellID],spp))
-        SPP.append(spp)
+    for spp in range(1,501):
+        p=computeProbability_spp(data[cellID],spp)
+        if(p!=-1):
+            P.append(p)
+            SPP.append(spp)
             
     return (P,SPP)
     
@@ -148,22 +149,110 @@ def compute_probabilities(resultFilePath):
     
     return thresholds
 
+# logistic function
+def sigmoid(x,x0, k):
+    y = 1 / (1 + np.exp(k*(x-x0)))
+    return (y)
 
-# TODO
+# fits a logistic function to dataX and dataY
+def fit_logisticFunction(dataX,dataY):
+    p0 = [np.median(dataX),1] # this is an mandatory initial guess
+    upBounds=[500,np.inf]
+    lowBounds=[1,0]
+    popt, pcov = curve_fit(sigmoid,dataX, dataY,p0, method='trf',maxfev=5000,bounds=(lowBounds,upBounds))
+    return (popt, pcov)
+
+# return a list of the perceptive thresholds (refers to the image ID)
+# threshold_spp = 20*(threshold_ID+1)
+def compute_thresholds(resultFilePath):
+    result = compute_probabilities(resultFilePath)
+    T=[]
+    for i in range(4):
+        for j in range(4):
+            dataX = result[i+4*j][1]
+            dataY = result[i+4*j][0]
+            #logistic curve fitting
+            params, cov = fit_logisticFunction(dataX,dataY)
+            print(str(i)+","+str(j)+":")
+            if(cov[0,0] == np.inf):
+                print("unable to fit")
+                T.append(1)
+            else:
+                print("parameters = ")
+                print(params)
+                print("perr  = ")
+                print(np.sqrt(np.diag(cov)))
+             
+                T.append(int(np.round(params[0])))
+            print("")
+    return T
+    
+# show the probability plots and threshold values
 def showResult(resultFilePath):
     result = compute_probabilities(resultFilePath)
     
     fig, axes = plt.subplots(4,4, sharex=True, sharey=True)
+    fig.suptitle(resultFilePath, fontsize=16)
     for i in range(4):
         for j in range(4):
+            dataX = result[i+4*j][1]
+            dataY = result[i+4*j][0]
+            #logistic curve fitting
+            params, cov = fit_logisticFunction(dataX,dataY)
+            print(str(i)+","+str(j)+":")
+            if(cov[0,0] == np.inf):
+                print("unable to fit")
+            else:
+                print("parameters = ")
+                print(params)
+                print("perr  = ")
+                print(np.sqrt(np.diag(cov)))
+                X = np.linspace(1,501,501)
+                Y = sigmoid(X,params[0],params[1])
+                axes[i,j].plot(X,Y,"r",linewidth=1)
+                axes[i,j].plot(params[0],0.5,"rx")
+                axes[i,j].axvline(params[0],ls="--",color="r",ymin=0,ymax=0.5,linewidth=0.5)
+                axes[i,j].set_xlabel("seuil("+str(i)+","+str(j)+")="+str(20*int(np.round(params[0])+1))) 
+            print("")
+            #data points
+
             axes[i,j].set_ylim([0,1.05])
-            axes[i,j].plot(result[i+4*j][1],result[i+4*j][0],".")
+            axes[i,j].plot(dataX,dataY,"k.")
+            
+#    plt.setp(axes[-1, :], xlabel='spp')
+    plt.setp(axes[:, 0], ylabel='P_detection(spp)')
 
     plt.show()
-    
+
+# generate an image made of all the threshold images
+def show_thresholdImage(resultFilePath,imgDataBasePath):
+    T = compute_thresholds(resultFilePath)
+    sceneName=resultFilePath.replace("data/p3d_","").replace("_results.log","")
+    side = "right"
+    imgOut=Image.new('RGB', (800, 800))
+    for i in range(4):
+        for j in range(4):
+            print((i,j))
+            
+            im = Image.open(imgDataBasePath+"/p3d_"+sceneName+"-"+side+"/p3d_"+sceneName+"-"+side+"_"+  str(T[i+4*j]).zfill(5) +".png")
+            region = im.crop((i*200, j*200, (i+1)*200, (j+1)*200))
+            
+            imgOut.paste(region,(i*200, j*200))
+    imgOut.show()
+    imgOut.save("output.png")
+
+path="data/p3d_arcsphere_results.log"
+#path="data/p3d_contemporary-bathroom_results.log"
+#path="data/p3d_caustic-view0_results.log"
+#path="data/p3d_crown_results.log"
+#path="data/p3d_indirect_results.log"
+show_thresholdImage(path,"E:/image")
+showResult(path)
 
 
-#process_log("../ExperimentData/Resultats 20052021")
-#print(compute_threshold("data/p3d_arcsphere_results.log"))
-showResult("data/p3d_contemporary-bathroom_results.log")
+
+
+
+
+
 
