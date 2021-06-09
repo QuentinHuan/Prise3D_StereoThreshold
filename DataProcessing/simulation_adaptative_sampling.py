@@ -105,7 +105,47 @@ def test_MLE_procedure(B,N,bShowPlots):
         plt.show()
     return np.mean(ERROR_X0_MLE)
 
-B=200
+# generate next stimulus given dataX and dataY
+def next_stimulus_MLE(dataX,dataY):
+    # experiment beginning: first stimulus is in sampling space center
+    if len(dataX)==0:
+        return 250
+    else:
+        # make sure it's a float32 array
+        dataX=np.asarray(dataX,dtype=np.float32)
+        dataY=np.asarray(dataY,dtype=np.float32)
+        # fit new logistic curve to data
+        params = pd.fit_logisticFunction_MLE(dataX,dataY)
+        X0_estimated=int(params[1])
+
+        return X0_estimated
+
+
+# parse arguments:
+# args are "python3 simulation_MLE.py spp_0,spp_1,...,spp_n;detected_0,detected_1,...,detected_n"
+print(sys.argv)
+
+arg = sys.argv[1].split(";")
+
+dataX = arg[0].split(',')
+dataY = arg[1].split(',')
+
+print(dataX)
+print(dataY)
+# convert to int
+for i in range(len(dataX)):
+    if dataX[i] != '' and dataY[i] != '':
+        dataX[i]=int(dataX[i])
+        dataY[i]=int(dataY[i])
+    else:
+        dataX.clear()
+        dataY.clear()
+print(next_stimulus_MLE(dataX,dataY))
+
+
+
+
+""" B=200
 L=[10,20,30,40,50]
 result=[]
 for N in L:
@@ -115,4 +155,4 @@ fig, axs = plt.subplots(1,1)
 axs.plot(L,20*np.asarray(result),"k")
 axs.set_xlabel("number of observations")
 axs.set_ylabel("threshold estimation precision (in spp)")
-plt.show()
+plt.show() """
