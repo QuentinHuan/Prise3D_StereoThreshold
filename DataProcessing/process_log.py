@@ -1,4 +1,3 @@
-import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import fileinput
@@ -47,7 +46,8 @@ def split_logFile(path,fileName):
         file = open(path+"/"+fileName, 'r')
         Lines = file.readlines()
         fileName_striped = fileName.replace("prune_","") #remove prune_
-        fileName_striped = fileName_striped.replace("P3d_Expe1-backup-","") #remove prune_
+        fileName_striped = fileName_striped.replace("P3d_Expe1","") #remove P3d_Expe1
+        fileName_striped = fileName_striped.replace("-backup-","") #remove 
         scene = "NULL"
         for l in Lines:
             l_split = l.split(";")
@@ -59,8 +59,10 @@ def split_logFile(path,fileName):
                 outFile = open(path+"/"+scene+"_"+fileName_striped,"w")
             #rewrite without the scene name at the begining of each line
             outFile.write(l.replace(l_split[0]+";",""))
-        outFile.write("-1;X=-1 Y=-1;X=-1 Y=-1;-1;0")
-        outFile.close()
+            
+        if len(Lines)>0:
+            outFile.write("-1;X=-1 Y=-1;X=-1 Y=-1;-1;0")
+            outFile.close()
         file.close()
         os.remove(path+"/"+fileName)
 
@@ -139,15 +141,18 @@ def analyze_logFile(path,fileName):
 # should be executed after analyze_logFile()
 # for each scene, merge all results in a single file named scene_results.log
 # delete all intermediate files
-def merge_logFile(path,sceneList):
-
+def merge_logFile(path,sceneList,bOverride):
+    mode={0:"a" , 1:"w"}
     for s in sceneList:
         filename =path+"/"+s+"_results.log"
-        F = open(filename,"w")
-        files=u.listFiles(path,[s+"_2"])
+        F = open(filename,mode[bOverride])
+        files=u.listFiles(path,[s])
         for f in files:
-            splitFile = open(path+"/"+f,"r")
-            F.writelines(splitFile.readlines())
-            splitFile.close()
-            os.remove(path+"/"+f)
+            if("results" in f):
+                print(f+"is result file, skip merge...")
+            else:
+                splitFile = open(path+"/"+f,"r")
+                F.writelines(splitFile.readlines())
+                splitFile.close()
+                os.remove(path+"/"+f)
         F.close()

@@ -6,12 +6,13 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import sys
 
-# simulate an stimulus response
+# simulate a stimulus response
 # at spp sample
 # response follows a logistic probability distribution of parameters (k,x0)
+# ajust p_error to add some random acquisition errors
 def newObservation(spp,k,x0):
-
-    e=np.random.binomial(1, 0.05, 1)[0]
+    p_error = 0.05 #bit switching error probability
+    e=np.random.binomial(1, p_error, 1)[0] # error flag
     p=pd.sigmoid(-k*(spp-x0))
 
     obs=np.random.binomial(1, p, 1)[0]
@@ -48,7 +49,7 @@ def MLE_simulation(x0_ref,k_ref,N):
 
     return [X0_estimated,k_estimated,dataX,dataY]
 
-# launch a batch MLE threshold seeking procedure to evaluate precision
+# launch a batch of MLE threshold seeking procedure to evaluate precision
 # B is the amount of procedures to simulate
 # N is the number of observation per procedure
 def test_MLE_procedure(B,N,bShowPlots):
@@ -98,7 +99,7 @@ def test_MLE_procedure(B,N,bShowPlots):
             axs[0].plot(dataX,dataY,"kx")
             if(i==N-1):
                 axs[0].plot(X,Y_fit,"--",color=(1,0,0,1))
-            #plt.pause(0.1)
+            #plt.pause(0.1) # uncomment for animation
         
         axs[1].plot(ERROR_X0_MLE,"k.")
 
@@ -121,26 +122,6 @@ def next_stimulus_MLE(dataX,dataY):
         return X0_estimated
 
 
-# parse arguments:
-# args are "python3 simulation_MLE.py spp_0,spp_1,...,spp_n;detected_0,detected_1,...,detected_n"
-print(sys.argv)
-
-arg = sys.argv[1].split(";")
-
-dataX = arg[0].split(',')
-dataY = arg[1].split(',')
-
-print(dataX)
-print(dataY)
-# convert to int
-for i in range(len(dataX)):
-    if dataX[i] != '' and dataY[i] != '':
-        dataX[i]=int(dataX[i])
-        dataY[i]=int(dataY[i])
-    else:
-        dataX.clear()
-        dataY.clear()
-print(next_stimulus_MLE(dataX,dataY))
 
 
 

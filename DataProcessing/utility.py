@@ -6,8 +6,8 @@ Created on Thu Apr 15 11:12:09 2021
 """
 import sys
 import os
+import numpy as np
 
-    
 # return a list of the name of all the files in path
 # with all the strings in lookFor in their name
 def listFiles(path,lookFor):
@@ -46,3 +46,5 @@ def XYtoID(position):
     
     return np.abs(x+(4*y))
             
+
+# %%

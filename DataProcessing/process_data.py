@@ -37,43 +37,6 @@ def sortDataToXY(resultFilePath):
         R.append((dataX,dataY))
     return R
 
-# given a list of all patch in a given image portion, compute the probablity for sampling spp
-# data=[[spp,detected],[spp,detected],...]
-def computeProbability_spp(data,spp):
-    N=0
-    P=0
-    for i in range(len(data)):
-        if(data[i][0] == spp):
-            N = N + 1
-            P = P+data[i][1]
-    if N != 0:
-        P=P/N
-    else:
-        P=-1
-    return P
-
-# compute probability of detection for each spp level
-# return [array P, array SPP]
-def compute_probability(cellID,resultFilePath):
-    data = sort_data(resultFilePath)
-    P=[]
-    SPP=[]
-    for spp in range(1,501):
-        p=computeProbability_spp(data[cellID],spp)
-        if(p!=-1):
-            P.append(p)
-            SPP.append(spp)
-            
-    return (SPP,P)
-    
-# return a list of all the 16 couples [P,spp] (see utility.XYtoID() for order)
-def compute_probabilities(resultFilePath):
-    thresholds=[]
-    for i in range(16):
-        thresholds.append(compute_probability(i,resultFilePath))
-    
-    return thresholds
-
 # sigmoid function
 def sigmoid(x):
     #y = 1 / (1 + np.exp(-x))
@@ -85,6 +48,8 @@ def logistic(x,k,x0):
     y = 1 / (1 + np.exp(k*(x-x0)))
     return y
 
+# likelihood function for fit_logisticFunction_MLE
+# args are [k,x0]
 def logistic_likelihood(x,*args):
     THETA = x
     X=np.asarray(args[0],dtype=np.float32)
@@ -100,6 +65,7 @@ def logistic_likelihood(x,*args):
 
 # fits a logistic function to dataX and dataY
 # uses Maximood likelihood Estimation
+# returns [k,x0]
 def fit_logisticFunction_MLE(dataX,dataY):
     # initial guess
     x0 = [1,np.median(dataX)]
@@ -107,4 +73,3 @@ def fit_logisticFunction_MLE(dataX,dataY):
     l_u_bounds = [(0,2),(1,500)]
     res = minimize(logistic_likelihood,x0,args=(dataX,dataY),bounds=l_u_bounds)
     return res.x
-
