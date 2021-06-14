@@ -38,4 +38,11 @@ When exported, the ```.\WindowsNoEditor\P3d_Expe1\Content\data``` folder should 
 * ```sceneId.txt``` (used by Manager bluerprint to open the scene selected in Main level)
 * ```scenes.txt``` (list of scene, sceneId correspond to the line of this text file, starting at 0)
 
-Some Blueprint classes call native c++ functions: these are implemented in the ```P3dComponent``` class
+Some Blueprint classes call c++ functions: these are implemented in the ```P3dComponent``` class
+
+# MLE sampling strategy
+
+MLE sampling strategy use the previous results (stored in ```.\WindowsNoEditor\P3d_Expe1\Content\script\data```) to compute new noise values to test for each block. This happens at the start of the program (p3d_component will calls ```.\WindowsNoEditor\P3d_Expe1\Content\script\ComputeNewStimulusSet.py```)
+After the experiment is done, press ```escape``` (or ```menu``` button of the Vive controller) to quit and save the results. 
+
+All the scripts can be found in ```Prise3D_StereoThreshold/DataProcessing/```, check ```readme.md``` for more details
