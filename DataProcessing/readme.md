@@ -9,11 +9,11 @@ main scripts:
 * ```MLE_stimulus.py```: module for MLE procedure (interface and performance tests)
 * ```Output.py```: module for plots and visualisation of the results
 
-unreal bindings
+unreal bindings:
 * ```ExperimentAnalysis.py```: analyse .log files and save the results (used by UE4 project)
 * ```ComputeNewStimulusSet.py```: use saved results to compute new stimulus values (used by UE4 project)
 
-install scripts
+install scripts:
 * ```utility.py```: various utility functions
 * ```get-pip.py```: install pip on computer
 * ```install.sh```: bash script to install all the dependencies
@@ -23,7 +23,7 @@ install scripts
 * package the project
 * add the ```script``` folder into ```packProjectFolder\WindowsNoEditor\P3d_Expe1\Content\script\```
 
-# check if everything is working as expected
+# Check if everything is working as expected:
 
 * run ```python /pathToScript/ComputeNewStimulusSet.py p3d_contemporary-bathroom``` (or some other scene present in ```/pathToScript/data```).
 script should print something of the sort: ```177,267,216,77,77,254,77,206,259,293,245,77,234,247,77,77```
