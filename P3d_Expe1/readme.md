@@ -50,7 +50,7 @@ MLE sampling strategy use the previous results (stored in ```.\WindowsNoEditor\P
 * 
 After the experiment is done, press ```escape``` (or ```menu``` button of the Vive controller) to quit and save the results. 
 
-# working with the unreal project:
+# Working with the unreal project:
 
 Since the project uses various external ressources, it is advised to package the game everytime you want to test something (alt+P is likely to cause a crash, or missing ressources). A painless way to setup everything is to download the binaries somewhere, and package the project in this folder (UE4 editor will update the files without breaking the folder hierarchy).
 
