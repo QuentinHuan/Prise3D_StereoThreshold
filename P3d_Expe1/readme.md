@@ -47,7 +47,7 @@ Some Blueprint classes call c++ functions: these are implemented in the ```P3dCo
 MLE sampling strategy use the previous results (stored in ```.\WindowsNoEditor\P3d_Expe1\Content\script\data```) to compute new noise values to test for each block. This happens at the start of the program (p3d_component will calls ```.\WindowsNoEditor\P3d_Expe1\Content\script\ComputeNewStimulusSet.py``` in a new terminal). If the program holds on when starting a new experiment, check that:
 * python version 3 is installed (version 2 does work, but you'll need to manualy close the terminal each time...)
 * that the MLE scripts are working properly (see DataProcessing/readme.md for more info)
-* 
+
 After the experiment is done, press ```escape``` (or ```menu``` button of the Vive controller) to quit and save the results. 
 
 # Working with the unreal project:
