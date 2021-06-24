@@ -1,6 +1,7 @@
 # Open the project:
 
 Download project full [here](https://drive.google.com/file/d/1TRB8mbDN4n1Vy9b0KTbXfPOhJEo_GYa_/view?usp=sharing) (~2Go)
+Download project binaries [here](TODO) (~300Mo)
 (Opens with UE4.26)
 
 Or start from a blank project (not advised...):
