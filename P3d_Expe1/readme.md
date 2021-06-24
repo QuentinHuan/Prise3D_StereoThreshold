@@ -38,11 +38,22 @@ When exported, the ```.\WindowsNoEditor\P3d_Expe1\Content\data``` folder should 
 * ```sceneId.txt``` (used by Manager bluerprint to open the scene selected in Main level)
 * ```scenes.txt``` (list of scene, sceneId correspond to the line of this text file, starting at 0)
 
+The ```packProjectFolder\WindowsNoEditor\P3d_Expe1\Content\script\``` folder is a copy of DataProcessing folder (check readme.md for more info)
+
 Some Blueprint classes call c++ functions: these are implemented in the ```P3dComponent``` class
 
 # MLE sampling strategy
 
-MLE sampling strategy use the previous results (stored in ```.\WindowsNoEditor\P3d_Expe1\Content\script\data```) to compute new noise values to test for each block. This happens at the start of the program (p3d_component will calls ```.\WindowsNoEditor\P3d_Expe1\Content\script\ComputeNewStimulusSet.py```)
+MLE sampling strategy use the previous results (stored in ```.\WindowsNoEditor\P3d_Expe1\Content\script\data```) to compute new noise values to test for each block. This happens at the start of the program (p3d_component will calls ```.\WindowsNoEditor\P3d_Expe1\Content\script\ComputeNewStimulusSet.py``` in a new terminal). If the program holds on when starting a new experiment, check that:
+* python version 3 is installed (version 2 does work, but you'll need to manualy close the terminal each time...)
+* that the MLE scripts are working properly (see DataProcessing/readme.md for more info)
+* 
 After the experiment is done, press ```escape``` (or ```menu``` button of the Vive controller) to quit and save the results. 
 
-All the scripts can be found in ```Prise3D_StereoThreshold/DataProcessing/```, check ```readme.md``` for more details
+# working with the unreal project:
+
+Since the project uses various external ressources, it is advised to package the game everytime you want to test something (alt+P is likely to cause a crash, or missing ressources). A painless way to setup everything is to download the binaries somewhere, and package the project in this folder (UE4 editor will update the files without breaking the folder hierarchy).
+
+
+
+
