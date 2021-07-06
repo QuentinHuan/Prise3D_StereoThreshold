@@ -14,7 +14,6 @@ unreal bindings:
 * ```ComputeNewStimulusSet.py```: use saved results to compute new stimulus values (used by UE4 project)
 
 install scripts:
-* ```utility.py```: various utility functions
 * ```get-pip.py```: install pip on computer
 * ```install.sh```: bash script to install all the dependencies
 
