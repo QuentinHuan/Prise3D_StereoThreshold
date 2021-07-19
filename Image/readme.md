@@ -11,4 +11,8 @@ Format: png
 Dimensions: 800*800
 * ODS folder countains images for a VR headset visualizing 360deg stereo images (Omni Directionnal Stereo, see https://developers.google.com/vr/jump/rendering-ods-content.pdf).
 
-Images were generated using the custom P3D_pbrt-v4 pathtracing engine ([see](https://github.com/prise-3d/pbrt-v4)). OSD content can be rendered with a specific camera model implemented in the dev branch.
+# Generation:
+Images were generated using the custom P3D_pbrt-v4 pathtracing engine ([see](https://github.com/prise-3d/pbrt-v4)).
+OSD content can be rendered with a specific camera model implemented in the dev branch.
+
+You can use the python scripts in this repo to generate a set of images for a selected list of scenes.
