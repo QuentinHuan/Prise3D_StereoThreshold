@@ -1,4 +1,4 @@
-Image database [HERE](https://pcsbox.univ-littoral.fr/library/01d81fe5-0e1e-40b4-a9b0-d7a00d6c1dd5/Ma%20biblioth%C3%A8que/Prise3D_Stage_PerceptionBruitVisionStereoscopique/image)
+Image database [HERE](https://pcsbox.univ-littoral.fr/d/14c0dfa2e07148d98b84/)
 
 # description:
 Images generated for threshold mesurement. The images are organized by *scene name* and by *point of view* (ex: ``p3d_arcsphere-right`` contains all the images of the scene "arcsphere" for the right point of view). Image quality is progressive (1 images correspond to an increase 20 spp), maximum spp is 10.000 spp (image #500).
