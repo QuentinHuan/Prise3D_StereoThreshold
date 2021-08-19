@@ -4,7 +4,7 @@ Prise3D_StereoThreshold experiment repository: constains source of various tools
 
 * P3d_StereoThreshold: binary version of experiment \#1 (capture of perceptive thresholds for noisy pathtraced stereo images)
 * Image: link to the image dataBase (800x800 .png images, increment of 20 spp per image)
-* P3d_Expe1: Ue4 v4.26 project of experiment \#1
+* P3d_StereoThreshold_VR: Ue4 v4.26 project of experiment \#1
 * ExperimentData: experimental data (gaze Tracking)
 * DataProcessing: Python scripts used to process gaze Tracking data
 * ImageDatabaseGeneration: scripts used for the generation of the experiment dataset
