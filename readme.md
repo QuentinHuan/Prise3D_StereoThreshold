@@ -1,5 +1,11 @@
 Prise3D_StereoThreshold experiment repository: constains source of various tools used during my 2021 internship (LISIC, Calais, France)
 
+Path tracing methods for photorealistic image synthesis allows the production of realistic images from a 3D scene. 
+Their progressive nature implies, in many cases, a high number of sample per pixels (spp) to achieve noise free images.
+The lower spp limit required to achieve imperceptible noise level is generally highly dependent of the geometry of the scene, its lighting, the materials, etc...  
+
+The goal of this 6-month internship was to measure the perceptive limit for the spp necessary to obtain noise free stereoscopic images observed through a VR headset, and compare it to the perceptive threshold of the same image observed on a regular screen.
+
 # Directories description :
 
 * P3d_StereoThreshold: binary version of experiment \#1 (capture of perceptive thresholds for noisy pathtraced stereo images)
