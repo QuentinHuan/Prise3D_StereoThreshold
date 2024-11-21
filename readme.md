@@ -13,8 +13,8 @@ Prise3D_StereoThreshold experiment repository: constains source of various tools
 First, make sure you have steamVR installed and that you're HMD is configured properly (tested with Vive Pro and Cosmos).
 The experiment requires one controller (either right or left).
 
-* Download the experiment binaries [here](TODO)
-* Download the image Database [here](TODO)
+* Download the experiment binaries [here](https://pcsbox.univ-littoral.fr/f/ac96fe78a1e1446d94b4/?dl=1)
+* Download the image Database [here](https://pcsbox.univ-littoral.fr/d/851527b2b18a4f81aebf/)
 * Open the file ```config.txt```  in ```.\P3D\WindowsNoEditor\P3d_Expe1\Content\data``` 
 * Change the line ```ImagePath=E:\image\```  to the corresponding path in your system
 * Do the same for ```config_tutorial.txt```
@@ -31,9 +31,9 @@ Tracking results are saved in: ```.\P3D\WindowsNoEditor\P3d_Expe1\Saved\Logs```
 
 # Setting Up the Unreal Project:
 
-Download the project [here](TODO)
+Download the project [here](https://pcsbox.univ-littoral.fr/d/6f101579cefe4e4493dd/?dl=1)
 
-Or alternatively, you can import the files manually in a blank UE4 project (not advised though, it's rather teddious...)
+Or alternatively, you can probably import the files manually in a blank UE4 project (not advised though, it may be teddious...)
 
 # DataProcessing scripts:
 see ```DataProcessing/readme```
